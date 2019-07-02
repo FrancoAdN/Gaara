@@ -9,10 +9,10 @@ let db = {
     ],
 
     proyects: [
-        {creator: 1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04'},
-        {creator: 1, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09'},
-        {creator: 2, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20'},
-        {creator: 2, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03'}
+        {creator: 1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04', id:1},
+        {creator: 1, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', id:2},
+        {creator: 2, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', id:3},
+        {creator: 2, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', id:4}
     ]
 };
 
@@ -56,6 +56,7 @@ app.post('/login', (req, response) => {
     });
 });
 
+//adding a proyect to db
 
 app.post('/proy', (req, response) => {
     const proy = req.body;
@@ -67,4 +68,19 @@ app.post('/proy', (req, response) => {
         status: 'Success'
     });
     
-})
+});
+
+//delete proyect
+app.post('/d', (req, response) => {
+    const id = req.body.id;
+    for(let i = 0; i < db.proyects.length; i++){
+        if(db.proyects[i].id == id)
+            db.proyects.splice(i, 1);
+    }
+    console.log(`Proyect deleted, id: ${id}`);
+
+    response.json({
+        status: 'Success'
+    });
+    
+});
