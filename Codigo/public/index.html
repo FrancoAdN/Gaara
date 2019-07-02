@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gaara</title>
+</head>
+<body>
+
+    <form id="formLogin" style="display: block;">
+        <div id='login'>
+            <label for="usr">Ingrese el usuario:</label>
+            <input type="text" id="usr">
+            <label for="pwd">Contraseña:</label>
+            <input type="password" id="pwd" onkeypress="enterKey(event)">
+            <input type="button" value="Iniciar Sesion" id="inSesion" onclick="login()">
+        </div>
+    </form>
+
+    <div id="contProyect" style="display: none;">
+        <input type="button" value="Nuevo proyecto" onclick="showFormOfProyect()">
+        <form id='proyectAttr' style="display: none;">
+            <input type="text" id="proyectName" placeholder="New Proyect"></br>
+            <label for="desc">Descripción del proyecto</label>
+            <input type="text" id="proyectDesc"></br>
+            <label for="start">Comienzo del proyecto</label>
+            <input type="date" id="startProyect"></br>
+            <label for="end">Finalización del proyecto</label>
+            <input type="date" id="endProyect"></br>
+            <input type="button" value="Crear proyecto" id="btnCreateProyect" onclick="createProyect()">
+        </form>
+        <div id="proyList"></div>
+    </div>
+
+
+    <script src="./js/index.js"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+</body>
+</html>
