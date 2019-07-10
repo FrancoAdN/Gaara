@@ -14,19 +14,34 @@ function makeListOfProyects(){
     }
 }
 
-function viewProyectDetails(proyect){
+
+async function viewProyectDetails(proyect){
+    db['tasks'] = await loadTasks(proyect.id);
     $('#viewProyect').empty();
-    $('#contProyect').css('display', 'none');
-    $('#proyList').css('display', 'none');
-    $('#viewProyect').css('display', 'block');
+
+    back('#contProyect', '#viewProyect');
     
-    $('#viewProyect').append(`<p>${proyect.name}</p>
+    $('#viewProyect').append(`
+    <button onclick="back('#viewProyect','#contProyect');"><img src="../img/reply-arrow.png"></button>
+    <p>${proyect.name}</p>
     <p>${proyect.desc}</p>
     <p>${proyect.start}</p>
     <p>${proyect.end}</p>
     <button onclick='deleteProyect(${proyect.id})'>
     <img src="../img/trash.png" style="width:20px; height:20px;">
     </img></button>`);
+    for(let t of db.tasks){
+        let state;
+        if(t.state == 1)
+            state = 'Created';
+        else if(t.state == 2)
+            state = 'Pending';
+        else if(t.state == 3)
+            state = 'Test';
+        $('#viewProyect').append(`<div onclick='viewTaskDetails(${t.id})' style="border: 1px solid black"><p>${t.name} ${t.desc} ${t.hours}hs ${state}</p></div></br>`);
+    }
+
+    $('#viewProyect').append(`<button onclick="showFormOfTask(${proyect.id})"><img src="../img/plus-math.png"></button>`);
 }
 
 function deleteProyect(n){
@@ -50,9 +65,7 @@ function deleteProyect(n){
     fetch('/d', options)
     .catch(error => console.error(error));
 
-    $('#viewProyect').css('display', 'none');
-    $('#contProyect').css('display', 'block');
-    $('#proyList').css('display', 'block');
+    back('#viewProyect', '#contProyect');
     makeListOfProyects();
     
    
@@ -79,8 +92,10 @@ async function login(){
         if(json.id){
             db.user.name = user.name;
             db.user.id = json.id;
-            $('#formLogin').css('display', 'none');
-            $('#contProyect').css('display', 'block');
+            back('#formLogin', '#contProyect');
+            $('#toolbar').css('display', 'block');
+            $('#bUser').append(db.user.name);
+            $('#myTasks').attr('onclick', `showMyTasks(${db.user.id})`)
             db.proyects = json.proyects;
             makeListOfProyects();
         }
@@ -95,21 +110,18 @@ function enterKey(event){
 }
 
 function showFormOfProyect(){
-    if($('#proyectAttr').css('display') === 'block'){
+    if($('#proyectAttr').css('display') === 'block')
         $('#proyectAttr').css('display', 'none');
-        $('#proyList').css('display', 'block');
-        makeListOfProyects();
-    }else{
+    else
         $('#proyectAttr').css('display', 'block');
-        $('#proyList').css('display', 'none');
-    } 
+    
 }   
 
 
-function createProyect(){
+async function createProyect(){
     let today = new Date();
     let dd = String(today.getDate()).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); 
     let yyyy = today.getFullYear();
 
     today = yyyy + '-' + mm + '-' + dd;
@@ -147,11 +159,11 @@ function createProyect(){
             }
         };
         
-        fetch('/proy', options)
-        .catch(error => console.error(error));
+        const response = await fetch('/proy', options).catch(error => console.error(error));
+        const json = await response.json();
+        proyect['id'] = json.id;
         db.proyects.push(proyect);
         $('#proyectAttr').css('display', 'none');
-        $('#proyList').css('display', 'block');
         makeListOfProyects();
 
     }
