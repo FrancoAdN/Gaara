@@ -66,6 +66,29 @@ function viewTaskDetails(id){
     console.log(id);
 }
 
-function showMyTasks(id){
-    console.log(id);
+async function showMyTasks(id){
+    const options = { 
+        method: 'POST',
+        body: JSON.stringify({id: id}), 
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const response =  await fetch('/showtask', options).catch(err => console.error(err));
+    const json = await response.json();
+    if(json){
+        back('#contProyect', '#showtask');
+        $('#showtask').append(`<button onclick="back('#showtask','#contProyect');"><img src="../img/reply-arrow.png"></button>`);
+        for(let t of json.tasks){
+            let state;
+            if(t.task.state == 1) 
+                state = "Created";
+            else if(t.task.state == 2)
+                state = "Pending";
+            else if(t.task.state == 3)
+                state = "Test";
+            $('#showtask').append(`<p style="border: 1px solid black;">Proyecto: ${t.proyect} Tarea: ${t.task.name} Cantidad de horas: ${t.task.hours} Estado: ${state}</p></br>`);
+        }
+    }
 }

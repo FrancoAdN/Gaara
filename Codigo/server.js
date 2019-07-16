@@ -67,6 +67,27 @@ let db = {
 const express = require('express');
 const bodyParser = require('body-parser');
 const readline = require('readline');
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://dina:dina2019@ds141434.mlab.com:41434/participemos-arg";
+
+MongoClient.connect(url, function(err, db) {
+  if (err) console.log(err);
+
+  let dbo = db.db("participemos-arg");
+
+  try{
+    dbo.collection("usuarios").find({ nro : {$gt:25 , $lt:50 } } ).toArray(function(err, result) {
+        if (err) console.error(err);
+        console.log(result);
+        db.close();
+      });
+    
+  } catch(err){
+      console.log(err);
+  }
+
+
+});
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -193,4 +214,26 @@ app.post('/addTask',(req, response) => {
     response.json({
         status: 'Success'
     });
+});
+
+app.post('/showtask', (req, resp) => {
+    const id = req.body.id;
+    let show = [];
+    for(let tu of db.taskusers){
+        if(tu.u_id == id){
+            for(let task of db.tasks){
+                if(task.id == tu.t_id){
+                    for(let p of db.proyects){
+                        if(p.id == tu.p_id){
+                            show.push({proyect: p.name, task:task});
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    resp.json({tasks:show});
 });
