@@ -20,20 +20,20 @@ let db = {
     ],
 
     proyects: [
-        {creator: 1, state:1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04', id:1},
-        {creator: 1, state:2, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', id:2},
-        {creator: 2, state:3, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', id:3},
-        {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', id:4}
+        {creator: 1, state:1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04', group: 2, id:1},
+        {creator: 1, state:2, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', group: 3, id:2},
+        {creator: 2, state:3, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', group:6, id:3},
+        {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', group:10, id:4}
     ],
     tasks:[
-        {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1,id: 1},
-        {p_id: 1, name:'Tarea2', desc:'2', hours:5, state:1,id: 2},
-        {p_id: 2, name:'Tarea3', desc:'3', hours:7, state:1,id: 3},
-        {p_id: 2, name:'Tarea4', desc:'4', hours:1, state:1,id: 4},
-        {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1,id: 5},
-        {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1,id: 6},
-        {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1,id: 7},
-        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1,id: 8}
+        {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1, group: 3, id: 1},
+        {p_id: 1, name:'Tarea2', desc:'2', hours:5, state:1, group: 7, id: 2},
+        {p_id: 2, name:'Tarea3', desc:'3', hours:7, state:1, group: 5, id: 3},
+        {p_id: 2, name:'Tarea4', desc:'4', hours:1, state:1, group: 10, id: 4},
+        {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1, group: 1, id: 5},
+        {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, id: 6},
+        {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, id: 7},
+        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, id: 8}
     ],
     taskusers:[
         {p_id: 1, t_id:1, u_id:1},
@@ -87,13 +87,21 @@ const hbs = expbs.create({
     defaultLayout: 'main',
     layoutsDir:'views/layouts',
     helpers: {
-        state: (a, b) =>{
+        state: (a) =>{
             if(a == 1)
                 return '<div class="tm-status-circle moving"></div>Created';
             else if(a == 2)
-                return '<div class="tm-status-circle pending"></div>Pending';
+                return '<div class="tm-status-circle pending"></div>In progress';
             else if(a == 3)
                 return '<div class="tm-status-circle cancelled"></div>Test';
+        },
+        nameGroup: (id) => {
+            for(let g of db.groups){
+                if(g.id == id){
+                    return g.name;
+                    break;
+                }
+            }
         }
     }
 });
@@ -102,8 +110,8 @@ app.engine('handlebars', hbs.engine);
 
 app.set('view engine', 'handlebars');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json({limit:'50mb', extended:true}));
+app.use(bodyParser.urlencoded({limit:'50mb', extended:true}));
 app.use(cookieParser());
 app.use(session({resave: true, secret: '12345', saveUninitialized: true}));
 app.use(express.static('public'));
@@ -128,7 +136,7 @@ app.get('/login', (req, resp) => {
 });
 
 app.get('/home', (req, resp) => {
-    resp.render('index', {name: req.cookies.session.name, proyects: req.cookies.session.proyects});
+    resp.render('index', {name: req.cookies.session.name, proyects: getProyects(req.cookies.session.id)});
 });
 
 app.get('/add-task', (req, resp) => {
@@ -136,13 +144,29 @@ app.get('/add-task', (req, resp) => {
 });
 
 app.get('/add-project', (req, resp) => {
-    resp.render('add-project', {name: req.cookies.session.name, group: db.groups});
+    resp.render('add-project', {name: req.cookies.session.name, id: req.cookies.session.id, group: db.groups});
 });
 
 app.get('/accounts', (req, resp) => {
     resp.render('accounts');
 });
 
+app.get('/project/:id', (req, resp) => {
+    const id = req.params.id;
+    let p = [];
+    let t = [];
+    let admin;
+    for(let pj of db.proyects){
+        if(pj.id == id){
+            admin = ((pj.creator == req.cookies.session.id) ? true : false);
+            p.push(pj);
+            break;
+        }
+    }
+    const tasks = getTaskOfProyect(id);
+    resp.render('projects', {dou: true, name: req.cookies.session.name, project:p, tasks: tasks, admin: admin});
+
+});
 
 
 
@@ -188,15 +212,45 @@ MongoClient.connect(url, function(err, db) {
 //         console.log(db.taskuser);
 // });
 
-
-
+function getProyects(id){
+    let pyc = [];
+    let proy = [];
+    for(let tu of db.taskusers){
+        if(tu.u_id == id)
+            proy.push(tu.p_id);
+    }
+    for(let p of db.proyects){
+        if(p.creator == id)
+            proy.push(p.id);
+    }
+    for(let i = 0; i < proy.length; i++){
+        for(let j = i +1 ; j < proy.length; j++){
+            if(proy[i] == proy[j])
+                proy.splice(i, 1);
+        }
+    }
+    for(let p of db.proyects){
+        for(let n of proy){
+            if(n == p.id)
+                pyc.push(p);
+        }
+    }
+    return pyc;
+}
+function getTaskOfProyect(id){
+    let tasks = [];
+    for(let t of db.tasks){
+        if(t.p_id == id)
+            tasks.push(t);
+    }
+    return tasks;
+}
 
 
 //RECIEVING LOGIN DATA FROM CLIENT
 app.post('/login', (req, resp) => {
     
     let id = undefined;
-    let pyc = [];
     const verify = req.body;
     for(let u of db.users){
         if(u.email === verify.username && u.pwd === verify.password){
@@ -208,31 +262,12 @@ app.post('/login', (req, resp) => {
     }
 
     if(id){
-        pyc = [];
-        let proy = [];
-        for(let tu of db.taskusers){
-            if(tu.u_id == id)
-                proy.push(tu.p_id);
-        }
-        for(let p of db.proyects){
-            if(p.creator == id)
-                proy.push(p.id);
-        }
-        for(let i = 0; i < proy.length; i++){
-            for(let j = i +1 ; j < proy.length; j++){
-                if(proy[i] == proy[j])
-                    proy.splice(i, 1);
-            }
-        }
-        for(let p of db.proyects){
-            for(let n of proy){
-                if(n == p.id)
-                    pyc.push(p);
-            }
-        }
+        const pyc = getProyects(id);
         const sid = req.cookies['connect.sid'];
-        resp.cookie('session', {sid: sid, id: id, name: name, proyects: pyc});
+        resp.cookie('session', {sid: sid, id: id, name: name});
         resp.redirect('/home');
+    }else{
+        resp.redirect('/');
     }
 });
 
@@ -243,23 +278,12 @@ app.post('/logout', (req, resp) => {
 });
 
 app.post('/add-project', (req, resp) => {
-    console.log(req.body);
+    const data = {creator: parseInt(req.body.creator), state:1, name: req.body.name, desc: req.body.desc, start: req.body.start, end: req.body.end, car: req.body.img, group: req.body.category ,id:db.proyects.length+1};
+    db.proyects.push(data);
+    resp.redirect('/home');
 });
 /*
-//adding a proyect to db
 
-app.post('/proy', (req, response) => {
-    const proy = req.body;
-    proy.id = db.proyects.length + 1;
-    db.proyects.push(proy)
-    console.log(`New proyect added`, proy);
-
-    response.json({
-        status: 'Success',
-        id: proy.id
-    });
-    
-});
 
 //delete proyect
 app.post('/d', (req, response) => {
