@@ -8,7 +8,6 @@
 Inicio: <p>{{this.start}}</p><br>
 Fin: <p>{{this.end}}</p>
 {{/each}}
-
 <div class="container mt-5">
 <div class="row tm-content-row">
 <div class="col-12 tm-block-col">
@@ -28,6 +27,7 @@ Fin: <p>{{this.end}}</p>
         </tr>
       </thead>
       <tbody>
+          
           {{#if admin}}
           {{#each tasks}}
             <tr>
@@ -37,7 +37,7 @@ Fin: <p>{{this.end}}</p>
             <td> {{this.hours}} hs</td>
             <td> {{nameGroup this.group}}</td>
             <td>
-                <a href="#" class="tm-product-delete-link">
+                <a href="del/{{this.id}}" class="tm-product-delete-link">
                 <i class="far fa-trash-alt tm-product-delete-icon"></i>
                 </a>
             </td>
@@ -46,7 +46,6 @@ Fin: <p>{{this.end}}</p>
           {{else}}
             {{#each tasks}}
             <tr>
-            {{!-- <th scope="row"><input type="checkbox" /></th> --}}
             <td class="tm-product-name">{{this.name}}</td>
             <td> {{#state this.state}}{{/state}} </td>
             <td> {{this.hours}} hs</td>

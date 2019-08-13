@@ -1,29 +1,28 @@
 let db = {
     users:[
-        {usr: 'Franco', last:'di Nápoli', email:'francoadinapoli@gmail.com', pwd:'1234', id:1},
-        {usr: 'test', last:'prueba', email:'test@gmail.com', pwd:'test', id:2},
-        {usr: 'Tomás', last:'Vera', email:'tomas.vera@gmail.com', pwd:'1234', id:3},
-        {usr: 'Lautaro', last:'Caputo', email:'lautaro.caputo@gmail.com', pwd:'test', id:4},
-        {usr: 'Matías', last:'Valussi', email:'matias.valussi@gmail.com', pwd:'test', id:5},
-        {usr: 'Santiago', last:'Latorre', email:'santiago.latorre@gmail.com', pwd:'test', id:6},
-        {usr: 'Iván', last:'Leszkiewicz', email:'ivan.leszkiewicz@gmail.com', pwd:'test', id:7},
-        {usr: 'Martin', last:'Bruno', email:'martin.bruno@gmail.com', pwd:'test', id:8},
-        {usr: 'Iván', last:'Rodriguez', email:'ivan.rodriguez@gmail.com', pwd:'test', id:9},
-        {usr: 'Marcos', last:'Ortiz', email:'marcos.ortiz@gmail.com', pwd:'test', id:10},
-        {usr: 'Román', last:'Sammarco', email:'roman.sammarco@gmail.com', pwd:'test', id:11},
-        {usr: 'Tomás', last:'da Bouza', email:'tomas.dabouza@gmail.com', pwd:'test', id:12},
-        {usr: 'Pablo', last:'Gimenez', email:'pablo.gimenez@gmail.com', pwd:'test', id:13},
-        {usr: 'Franco', last:'Oliva', email:'franco.oliva@gmail.com', pwd:'test', id:14},
-        {usr: 'Luca', last:'Roma', email:'luca.roma@gmail.com', pwd:'test', id:15},
-        {usr: 'Axel', last:'Gonzalez', email:'axel.gonzalez@gmail.com', pwd:'test', id:16},
-        {usr: 'Rodrigo', last:'Tarqui', email:'rodrigo.tarqui@gmail.com', pwd:'test', id:17}
+        {usr: 'Franco', last:'di Nápoli', email:'francoadinapoli@gmail.com', pwd:'1234', admin: true, id:1},
+        {usr: 'test', last:'prueba', email:'test@gmail.com', pwd:'test', admin: true, id:2},
+        {usr: 'Tomás', last:'Vera', email:'tomas.vera@gmail.com', pwd:'1234', admin: false, id:3},
+        {usr: 'Lautaro', last:'Caputo', email:'lautaro.caputo@gmail.com', pwd:'test', admin: false,id:4},
+        {usr: 'Matías', last:'Valussi', email:'matias.valussi@gmail.com', pwd:'test', admin: false, id:5},
+        {usr: 'Santiago', last:'Latorre', email:'santiago.latorre@gmail.com', pwd:'test', admin: false, id:6},
+        {usr: 'Iván', last:'Leszkiewicz', email:'ivan.leszkiewicz@gmail.com', pwd:'test', admin: false,id:7},
+        {usr: 'Martin', last:'Bruno', email:'martin.bruno@gmail.com', pwd:'test', admin: false,id:8},
+        {usr: 'Iván', last:'Rodriguez', email:'ivan.rodriguez@gmail.com', pwd:'test', admin: false,id:9},
+        {usr: 'Marcos', last:'Ortiz', email:'marcos.ortiz@gmail.com', pwd:'test', admin: false,id:10},
+        {usr: 'Román', last:'Sammarco', email:'roman.sammarco@gmail.com', pwd:'test', admin: false,id:11},
+        {usr: 'Tomás', last:'da Bouza', email:'tomas.dabouza@gmail.com', pwd:'test', admin: false,id:12},
+        {usr: 'Pablo', last:'Gimenez', email:'pablo.gimenez@gmail.com', pwd:'test', admin: false,id:13},
+        {usr: 'Franco', last:'Oliva', email:'franco.oliva@gmail.com', pwd:'test', admin: false,id:14},
+        {usr: 'Luca', last:'Roma', email:'luca.roma@gmail.com', pwd:'test', admin: false,id:15},
+        {usr: 'Axel', last:'Gonzalez', email:'axel.gonzalez@gmail.com', pwd:'test', admin: false,id:16},
+        {usr: 'Rodrigo', last:'Tarqui', email:'rodrigo.tarqui@gmail.com', pwd:'test', admin: false,id:17}
     ],
-
     proyects: [
-        {creator: 1, state:1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04', group: 2, id:1},
-        {creator: 1, state:2, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', group: 3, id:2},
-        {creator: 2, state:3, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', group:6, id:3},
-        {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', group:10, id:4}
+        {creator: 1, state:1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04', id:1},
+        {creator: 1, state:2, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', id:2},
+        {creator: 2, state:3, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', id:3},
+        {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', id:4}
     ],
     tasks:[
         {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1, group: 3, id: 1},
@@ -33,46 +32,22 @@ let db = {
         {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1, group: 1, id: 5},
         {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, id: 6},
         {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, id: 7},
-        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, id: 8}
-    ],
-    taskusers:[
-        {p_id: 1, t_id:1, u_id:1},
-        {p_id: 1, t_id:1, u_id:2},
-        {p_id: 1, t_id:2, u_id:3},
-        {p_id: 1, t_id:2, u_id:4},
-        {p_id: 1, t_id:1, u_id:5},
-        {p_id: 2, t_id:3, u_id:6},
-        {p_id: 2, t_id:3, u_id:7},
-        {p_id: 2, t_id:4, u_id:8},
-        {p_id: 2, t_id:4, u_id:9},
-        {p_id: 2, t_id:3, u_id:10},
-        {p_id: 3, t_id:5, u_id:1},
-        {p_id: 3, t_id:5, u_id:2},
-        {p_id: 3, t_id:6, u_id:3},
-        {p_id: 3, t_id:6, u_id:4},
-        {p_id: 3, t_id:5, u_id:5},
-        {p_id: 4, t_id:7, u_id:6},
-        {p_id: 4, t_id:7, u_id:7},
-        {p_id: 4, t_id:8, u_id:8},
-        {p_id: 4, t_id:8, u_id:9},
-        {p_id: 4, t_id:7, u_id:10},
-        {p_id: 1, t_id:2, u_id:1},
-        {p_id: 2, t_id:4, u_id:2},
-        {p_id: 3, t_id:6, u_id:3},
-        {p_id: 4, t_id:8, u_id:4}
+        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, id: 8},
+        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, id: 8},
+        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, id: 8},
     ],
     groups:[
-        {id: 1, name: 'Electrónica'},
-        {id: 2, name: 'Programación Web'},
-        {id: 3, name: 'Programación Desktop'}, 
-        {id: 4, name: 'Mantenimiento Informático'},
-        {id: 5, name: 'Mantenimiento'},
-        {id: 6, name: 'Seguridad Informática'},
-        {id: 7, name: 'Diseño'},
-        {id: 8, name: 'Ventas'},
-        {id: 9, name: 'Administración'},
-        {id: 10, name: 'Redes'}
-    ]
+        {id: 1, name: 'Electrónica', users:[1, 3, 7, 10]},
+        {id: 2, name: 'Programación Web', users:[8, 4, 6, 2]},
+        {id: 3, name: 'Programación Desktop', users:[1, 9, 7]}, 
+        {id: 4, name: 'Mantenimiento Informático', users: [5]},
+        {id: 5, name: 'Mantenimiento', users:[5]},
+        {id: 6, name: 'Seguridad Informática', users:[1, 2, 3, 4]},
+        {id: 7, name: 'Diseño', users:[8, 10]},
+        {id: 8, name: 'Ventas', users:[6, 9]},
+        {id: 9, name: 'Administración', users:[3, 7, 9]},
+        {id: 10, name: 'Redes', users:[4, 7, 10]}
+    ],
 };
 
 //THING REQUIRED
@@ -136,7 +111,7 @@ app.get('/login', (req, resp) => {
 });
 
 app.get('/home', (req, resp) => {
-    resp.render('index', {name: req.cookies.session.name, proyects: getProyects(req.cookies.session.id)});
+    resp.render('index', {name: req.cookies.session.name, proyects: getProyects(req.cookies.session.id), admin: req.cookies.session.admin});
 });
 
 app.get('/add-task', (req, resp) => {
@@ -168,7 +143,22 @@ app.get('/project/:id', (req, resp) => {
 
 });
 
+app.get('/project/del/:id', (req, resp) => {
+    const id = req.params.id;
 
+    for(let i = 0; i < db.tasks.length; i++){
+        if(db.tasks[i].id == id){
+            const p = db.tasks[i].p_id;
+            db.tasks.splice(i, 1);
+            resp.redirect(`/project/${p}`);
+            break;     
+        }
+    }
+});
+
+app.get('/groups' , (req, resp) => {
+    resp.render('admin', {groups: db.groups});
+});
 
 
 
@@ -211,18 +201,34 @@ MongoClient.connect(url, function(err, db) {
 //     }else if(input == 'taskuser')
 //         console.log(db.taskuser);
 // });
+function getGroups(id){
+    let groups = [];
+    for(let gr of db.groups){
+        for(let us of gr.users){
+            if(us == id)
+                groups.push(gr.id);
+        }
+    }
+    return groups;
+}
+
 
 function getProyects(id){
     let pyc = [];
     let proy = [];
-    for(let tu of db.taskusers){
-        if(tu.u_id == id)
-            proy.push(tu.p_id);
-    }
     for(let p of db.proyects){
         if(p.creator == id)
             proy.push(p.id);
     }
+
+    for(let g of getGroups(id)){
+        for(tsk of db.tasks){
+            if(tsk.group == g)
+                proy.push(tsk.p_id);
+        }
+    }
+
+    //repeticiones 
     for(let i = 0; i < proy.length; i++){
         for(let j = i +1 ; j < proy.length; j++){
             if(proy[i] == proy[j])
@@ -237,13 +243,29 @@ function getProyects(id){
     }
     return pyc;
 }
+
 function getTaskOfProyect(id){
     let tasks = [];
     for(let t of db.tasks){
-        if(t.p_id == id)
+        if(t.p_id == id){
+            //t['usrInTask'] = isInTask(t.group, id);
             tasks.push(t);
+        }
     }
     return tasks;
+}
+
+function isInTask(group, id){
+    for(let g of db.groups){
+        if(g.id == group){
+            for(let us of g.users){
+                if(us == id){
+                    return true;   
+                }
+            }
+        }
+    }
+    return false;
 }
 
 
@@ -257,6 +279,7 @@ app.post('/login', (req, resp) => {
             console.log(`User logged on ${u.usr}`);
             id = u.id;
             name = u.usr;
+            admin = u.admin;
             break;
         }
     }
@@ -264,7 +287,7 @@ app.post('/login', (req, resp) => {
     if(id){
         const pyc = getProyects(id);
         const sid = req.cookies['connect.sid'];
-        resp.cookie('session', {sid: sid, id: id, name: name});
+        resp.cookie('session', {sid: sid, id: id, name: name, admin: admin});
         resp.redirect('/home');
     }else{
         resp.redirect('/');
