@@ -25,16 +25,16 @@ let db = {
         {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', id:4}
     ],
     tasks:[
-        {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1, group: 3, prec: NaN, id: 1},
-        {p_id: 1, name:'Tarea2', desc:'2', hours:5, state:1, group: 7, prec: NaN, id: 2},
-        {p_id: 2, name:'Tarea3', desc:'3', hours:7, state:1, group: 5, prec: NaN, id: 3},
-        {p_id: 2, name:'Tarea4', desc:'4', hours:1, state:1, group: 10, prec: NaN, id: 4},
-        {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1, group: 1, prec: NaN, id: 5},
-        {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, prec: NaN, id: 6},
-        {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, prec: NaN, id: 7},
-        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, prec: NaN, id: 8},
-        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, prec: NaN, id: 8},
-        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, prec: NaN, id: 8},
+        {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1, group: 3, prec: NaN, done: false, id: 1},
+        {p_id: 1, name:'Tarea2', desc:'2', hours:5, state:1, group: 7, prec: NaN, done: false, id: 2},
+        {p_id: 2, name:'Tarea3', desc:'3', hours:7, state:1, group: 5, prec: NaN, done: false, id: 3},
+        {p_id: 2, name:'Tarea4', desc:'4', hours:1, state:1, group: 10, prec: NaN, done: false, id: 4},
+        {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1, group: 1, prec: NaN, done: false, id: 5},
+        {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, prec: NaN, done: false, id: 6},
+        {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, prec: NaN, done: false, id: 7},
+        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, prec: NaN, done: false, id: 8},
+        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, prec: NaN, done: false, id: 8},
+        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, prec: NaN, done: false,id: 8}
     ],
     groups:[
         {id: 1, name: 'Electrónica', users:[1, 3, 7, 10]},
@@ -87,6 +87,21 @@ const hbs = expbs.create({
                     return t.name;
             }
             return '-';
+        },
+        projectname: (id) => {
+            for(let p of db.proyects){
+                if(p.id == id)
+                    return p.name;
+            }
+        },
+        isDone: (id) => {
+            for(let t of db.tasks){
+                if(t.id == id){
+                    return t.done;
+                }
+            }
+
+            return true;
         }
     }
 });
@@ -167,6 +182,26 @@ app.get('/project/del/:id', (req, resp) => {
             break;     
         }
     }
+});
+
+app.get('/task/:id', (req, resp) => {
+    const id = req.params.id;
+    let task = [];
+    let group = [];
+    for(let t of db.tasks){
+        if(t.id == id){
+            task.push(t);
+            break;
+        }
+    }
+
+    for(let gr of db.groups){
+        if(gr.id == task[0].group){
+            task[0].group = gr;
+            break;
+        }
+    }
+    resp.render('task', {dou: true, name: req.cookies.session.name, task: task});
 });
 
 app.get('/groups' , (req, resp) => {
@@ -330,7 +365,9 @@ app.post('/add-project', (req, resp) => {
 
 app.post('/add-task', (req, resp) => {
     const task = req.body;
-    db.tasks.push({ p_id: parseInt(task.proj), name: task.name, desc: task.desc, hours: parseInt(task.hours), state: 1, group: parseInt(task.group), prec: parseInt(task.prec), id: db.tasks.length-1 });
+    db.tasks.push({
+         p_id: parseInt(task.proj), name: task.name, desc: task.desc, hours: parseInt(task.hours), state: 1, group: parseInt(task.group), prec: parseInt(task.prec), done: false, id: db.tasks.length-1 
+        });
 
     resp.redirect(`/project/${task.proj}`);
 
@@ -438,80 +475,21 @@ app.post('/admin', (req, resp) => {
     }
     resp.redirect('/groups');
 });
-/*
 
 
-//delete proyect
-app.post('/d', (req, response) => {
+app.post('/endtask', (req, resp) => {
     const id = req.body.id;
-    for(let i = 0; i < db.proyects.length; i++){
-        if(db.proyects[i].id == id)
-            db.proyects.splice(i, 1);
-    }
-    console.log(`Proyect deleted, id: ${id}`);
-
-    response.json({
-        status: 'Success'
-    });
-    
-});
-
-
-
-//send task to client
-app.post('/tasks', (req, response) => {
-    const proy = req.body;
-    console.log(req.body);
-    let tasks = [];
+    let redirect;
     for(let t of db.tasks){
-        if(t.p_id == proy.id)
-            tasks.push(t);
-    }
-
-    response.json({
-        status: 'Success',
-        tasks: tasks
-    });
-});
-
-app.post('/addTask',(req, response) => {
-    const task = req.body;
-    task.id = db.tasks.length+1;
-    db.tasks.push(task);
-    console.log(`Proyect added ${task.id}`, task.p_id);
-    response.json({
-        status: 'Success'
-    });
-});
-
-app.post('/showtask', (req, resp) => {
-    const id = req.body.id;
-    let show = [];
-    for(let tu of db.taskusers){
-        if(tu.u_id == id){
-            for(let task of db.tasks){
-                if(task.id == tu.t_id){
-                    for(let p of db.proyects){
-                        if(p.id == tu.p_id){
-                            show.push({proyect: p.name, task:task});
-                            break;
-                        }
-                    }
-                    break;
-                }
-            }
+        if(t.id == id){
+            t.done = true;
+            redirect = t.p_id;
+            break;
         }
     }
 
-    resp.json({tasks:show});
+    resp.json({red: '/project/' + redirect});
 });
-*/
-
-
-
-
-
-
 
 
 

@@ -22,6 +22,7 @@ Fin: <p>{{this.end}}</p>
           <th scope="col"> Horas </th>
           <th scope="col"> Grupo </th>
           <th scope="col"> Precedencia </th>
+          <th scope="col"> Terminada </th>
           {{#if admin}}
           <th scope="col">&nbsp;</th>
           {{/if}}
@@ -31,7 +32,7 @@ Fin: <p>{{this.end}}</p>
           
           {{#if admin}}
           {{#each tasks}}
-            <tr>
+            <tr onclick="window.location.href = '/task/{{this.id}}';">
             <td class="tm-product-name">
               {{#if this.usrInTask}}
               <u>{{this.name}}</u>
@@ -43,6 +44,7 @@ Fin: <p>{{this.end}}</p>
             <td> {{this.hours}} hs</td>
             <td> {{nameGroup this.group}}</td>
             <td>{{precedence this.prec}}</td>
+            <td>{{#if this.done}}SI{{else}}NO{{/if}}</td>
             <td>
                 <a href="del/{{this.id}}" class="tm-product-delete-link">
                 <i class="far fa-trash-alt tm-product-delete-icon"></i>
@@ -57,6 +59,8 @@ Fin: <p>{{this.end}}</p>
             <td> {{#state this.state}}{{/state}} </td>
             <td> {{this.hours}} hs</td>
             <td> {{nameGroup this.group}}</td>
+            <td>{{precedence this.prec}}</td>
+            <td>{{#if this.done}}SI{{else}}NO{{/if}}</td>
             </tr>
             {{/each}}
           {{/if}}

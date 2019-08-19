@@ -1,0 +1,56 @@
+{{#each task}}
+
+    <h1>{{projectname this.p_id}}</h1><br><br>
+    <h3>{{this.name}}</h3><br><br>
+    <h4>Descripción: </h4>
+    <p>{{this.desc}}</p><br>
+
+    <h4>Horas: {{this.hours}} hs</h4>
+
+    <h4>{{this.group.name}}</h4>
+    {{#each this.group.users}}
+        <p>{{username this}}</p>
+    {{/each}}
+
+    <h5>Precedencia: {{precedence this.prec}}</h5>
+
+    
+    {{#if this.done}}
+        <p style="color: chartreuse;"> Tarea terminada</p>
+    {{else}}
+        {{#if (isDone this.prec) }}
+            <button id="init"onclick="initTask({{this.id}});">Iniciar tarea</button>
+            <button id="endTask" onclick="endTask({{this.id}});" disabled="disabled">Finalizar tarea</button>
+        {{else}}
+        <a href="/task/{{this.prec}}" style="color: red;">Debe terminar la tarea {{precedence this.prec}} antes de iniciar esta tarea</p>    
+        {{/if}}
+    {{/if}}
+
+{{/each}}
+
+
+<script>
+    function initTask(id){
+        console.log(id);
+        document.getElementById("endTask").disabled = false;
+        document.getElementById("init").disabled = true;
+        window.onbeforeunload = () => {
+            let msg = "Do you want to leave this page?";
+            return msg;
+        }
+    }
+    async function endTask(id){
+        window.onbeforeunload = null;
+        document.getElementById("endTask").disabled = true;
+        const options = { 
+            method: 'POST',
+            body: JSON.stringify({id: id}), 
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        };
+        const response =  await fetch('/endtask', options).catch(err => console.error(err));
+        const json = await response.json();
+        window.location.href = json.red;
+    }
+</script>
