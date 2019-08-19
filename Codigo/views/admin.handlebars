@@ -1,6 +1,127 @@
+<style>
+    h3:hover{
+        color:antiquewhite;
+    }
+    img:hover{
+        cursor: pointer;
+    }
+    #add, #del, #admin{
+        border: 1px solid black;
+        z-index: 1;
+        width: 400px;
+        height: 550px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -200px;
+        display: none;
+    }
+</style>
+<div id="admin">
+    <center><h3 id="adname"></h3></center>
+    <form id="adusers" action="/admin" method="post">
+    </form>
+</div>
+
+<div id="add">
+    <center><h3 id="name"></h3></center>
+    <form id="users" action="/add" method="post">
+    </form>
+</div>
+<div id="del">
+    <center><h3 id="dname"></h3></center>
+    <form id="dusers" action="/del" method="post">
+    </form>
+</div>
+<img src="/img/icons8-admin-settings-male-48.png" alt="ADMIN" onclick="admin()">
 {{#each groups}}
-<h3>{{this.name}}</h3>
+<h3><a>{{this.name}}</h3>
     {{#each this.users}}
-        
+        <p>{{username this}}</p>
     {{/each}}
+    <img src="/img/icons8-denied-30.png" alt="DEL" onclick="delUser({{this.id}}, '{{this.name}}')">
+    <img src="/img/icons8-add-user-group-man-man-30.png" alt="ADD" onclick="addUser({{this.id}}, '{{this.name}}')">
+    </br><br>
 {{/each}}
+
+<script>
+    async function addUser(id, name){
+        document.getElementById("admin").style.display = "none";
+        document.getElementById("del").style.display = "none";
+        document.getElementById("name").innerHTML = name;
+        const options = { 
+            method: 'POST',
+            body: JSON.stringify({group: id}), 
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        };
+        const response =  await fetch('/addusers', options).catch(err => console.error(err));
+        const json = await response.json();
+        const form = document.getElementById('users');
+        form.innerHTML = "";
+        form.innerHTML += `<input name="group" type="hidden" value="${id}">`;
+        for(let u of json.users){
+            form.innerHTML += `<input type="checkbox" name="users" value=${u.id}> <label for="users">${u.name}</label></br>`;
+        }
+        form.innerHTML += '<input type="button" onclick="document.getElementById(`add`).style.display = `none`" value="Cancelar">';
+        form.innerHTML += '<button type="submit">Agregar usuarios</button>';
+        
+        document.getElementById("add").style.display = "block";
+
+    }
+
+    async function delUser(id, name){
+        document.getElementById("add").style.display = "none";
+        document.getElementById("admin").style.display = "none";
+        document.getElementById("dname").innerHTML = name;
+        
+        const options = { 
+            method: 'POST',
+            body: JSON.stringify({group: id}), 
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        };
+        const response =  await fetch('/delusers', options).catch(err => console.error(err));
+        const json = await response.json();
+        const form = document.getElementById('dusers');
+        form.innerHTML = "";
+        form.innerHTML += `<input name="group" type="hidden" value="${id}">`;
+        for(let u of json.users){
+            form.innerHTML += `<input type="checkbox" name="users" value=${u.id}> <label for="users">${u.name}</label></br>`;
+        }
+        form.innerHTML += '<input type="button" onclick="document.getElementById(`del`).style.display = `none`" value="Cancelar">';
+        form.innerHTML += '<button type="submit">Eliminar usuarios</button>';
+
+
+
+        document.getElementById("del").style.display = "block";
+    }
+
+    async function admin(){
+        document.getElementById("add").style.display = "none";
+        document.getElementById("del").style.display = "none";
+        document.getElementById("adname").innerHTML = "ADMIN";
+
+        const options = { 
+            method: 'POST',
+            body: JSON.stringify({status: true}), 
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        };
+        const response =  await fetch('/adminusers', options).catch(err => console.error(err));
+        const json = await response.json();
+        const form = document.getElementById('adusers');
+        form.innerHTML = "";
+        for(let u of json.users){
+            form.innerHTML += `<input type="checkbox" name="users" value=${u.id}> <label for="users">${u.name}</label></br>`;
+        }
+        form.innerHTML += '<input type="button" onclick="document.getElementById(`admin`).style.display = `none`" value="Cancelar">';
+        form.innerHTML += '<button type="submit">Hacer admin</button>';
+
+        document.getElementById("admin").style.display = "block";
+
+    }
+</script>

@@ -25,16 +25,16 @@ let db = {
         {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', id:4}
     ],
     tasks:[
-        {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1, group: 3, id: 1},
-        {p_id: 1, name:'Tarea2', desc:'2', hours:5, state:1, group: 7, id: 2},
-        {p_id: 2, name:'Tarea3', desc:'3', hours:7, state:1, group: 5, id: 3},
-        {p_id: 2, name:'Tarea4', desc:'4', hours:1, state:1, group: 10, id: 4},
-        {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1, group: 1, id: 5},
-        {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, id: 6},
-        {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, id: 7},
-        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, id: 8},
-        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, id: 8},
-        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, id: 8},
+        {p_id: 1, name:'Tarea1', desc:'1', hours:4, state:1, group: 3, prec: NaN, id: 1},
+        {p_id: 1, name:'Tarea2', desc:'2', hours:5, state:1, group: 7, prec: NaN, id: 2},
+        {p_id: 2, name:'Tarea3', desc:'3', hours:7, state:1, group: 5, prec: NaN, id: 3},
+        {p_id: 2, name:'Tarea4', desc:'4', hours:1, state:1, group: 10, prec: NaN, id: 4},
+        {p_id: 3, name:'Tarea5', desc:'5', hours:20, state:1, group: 1, prec: NaN, id: 5},
+        {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, prec: NaN, id: 6},
+        {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, prec: NaN, id: 7},
+        {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, prec: NaN, id: 8},
+        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, prec: NaN, id: 8},
+        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, prec: NaN, id: 8},
     ],
     groups:[
         {id: 1, name: 'Electrónica', users:[1, 3, 7, 10]},
@@ -77,9 +77,22 @@ const hbs = expbs.create({
                     break;
                 }
             }
+        },
+        username: (id) => {
+            return idToUserName(id);
+        },
+        precedence: (id) => {
+            for(let t of db.tasks){
+                if(t.id == id)
+                    return t.name;
+            }
+            return '-';
         }
     }
 });
+
+
+
 
 app.engine('handlebars', hbs.engine);
 
@@ -139,7 +152,7 @@ app.get('/project/:id', (req, resp) => {
         }
     }
     const tasks = getTaskOfProyect(id);
-    resp.render('projects', {dou: true, name: req.cookies.session.name, project:p, tasks: tasks, admin: admin});
+    resp.render('projects', {dou: true, name: req.cookies.session.name, project:p, tasks: tasks, admin: admin, group: db.groups});
 
 });
 
@@ -157,8 +170,9 @@ app.get('/project/del/:id', (req, resp) => {
 });
 
 app.get('/groups' , (req, resp) => {
-    resp.render('admin', {groups: db.groups});
+    resp.render('admin', {name: req.cookies.session.name, groups: db.groups});
 });
+
 
 
 
@@ -248,11 +262,18 @@ function getTaskOfProyect(id){
     let tasks = [];
     for(let t of db.tasks){
         if(t.p_id == id){
-            //t['usrInTask'] = isInTask(t.group, id);
+            t['usrInTask'] = isInTask(t.group, id);
             tasks.push(t);
         }
     }
     return tasks;
+}
+
+function idToUserName(id){
+    for(let usr of db.users){ 
+        if(usr.id == id)
+            return usr.usr + ' ' + usr.last;
+    }
 }
 
 function isInTask(group, id){
@@ -295,6 +316,7 @@ app.post('/login', (req, resp) => {
 });
 
 
+
 app.post('/logout', (req, resp) => {
     resp.clearCookie('session');
     resp.redirect('/'); 
@@ -304,6 +326,117 @@ app.post('/add-project', (req, resp) => {
     const data = {creator: parseInt(req.body.creator), state:1, name: req.body.name, desc: req.body.desc, start: req.body.start, end: req.body.end, car: req.body.img, group: req.body.category ,id:db.proyects.length+1};
     db.proyects.push(data);
     resp.redirect('/home');
+});
+
+app.post('/add-task', (req, resp) => {
+    const task = req.body;
+    db.tasks.push({ p_id: parseInt(task.proj), name: task.name, desc: task.desc, hours: parseInt(task.hours), state: 1, group: parseInt(task.group), prec: parseInt(task.prec), id: db.tasks.length-1 });
+
+    resp.redirect(`/project/${task.proj}`);
+
+});
+
+
+app.post('/addusers', (req, resp) => {
+    let group;
+    for(let gr of db.groups){
+        if(req.body.group == gr.id){
+            group = gr;
+            break;
+        }
+    }
+    let usr = [];
+
+    for(let u of db.users){
+        let is = true;
+        for(let ug of group.users){
+            if(ug == u.id){
+                is = false;
+                break;
+            }
+        }
+        if(is)
+            usr.push({id: u.id, name: u.usr +' '+ u.last});
+    }
+    resp.json({users: usr});
+
+});
+app.post('/add', (req, resp) => {
+    if(req.body.users){
+        const users = req.body.users;
+        const group = req.body.group;
+        for(let gr of db.groups){
+            if(gr.id == group){
+                for(let u of users){
+                    const aux = parseInt(u);
+                    gr.users.push(aux);
+                }
+                break;
+            }
+        }
+    }
+    resp.redirect('/groups');
+});
+
+
+app.post('/delusers', (req, resp) => {
+    const id = req.body.group;
+    let aux;
+    for(let gr of db.groups){
+        if(gr.id == id){
+            aux = gr.users;
+        }
+    }
+    let group = [];
+    for(let i of aux){
+        group.push({id: i, name: idToUserName(i)});
+    }
+
+    resp.json({users: group});
+
+
+});
+app.post('/del', (req, resp) => {
+    if(req.body.users){
+        const users = req.body.users;
+        const group = req.body.group;
+        for(let gr of db.groups){
+            if(gr.id == group){
+                for(let i = 0; i < gr.users.length; i++){
+                    // db.proyects.splice(i, 1)
+                    for(let u of users){
+                        if(u == gr.users[i])
+                            gr.users.splice(i, 1);
+                    }
+                }
+                break;
+            }
+        }
+    }
+    resp.redirect('/groups');
+});
+
+app.post('/adminusers', (req, resp) => {
+    let users = [];
+    for(let u of db.users){
+        if(!u.admin)
+            users.push({id: u.id, name: idToUserName(u.id)});
+    }
+    resp.json({users: users});
+});
+
+app.post('/admin', (req, resp) => {
+    const users = req.body.users;
+    for(let u of db.users){
+        for(let i = 0; i < users.length; i++){
+            if(users[i] == u.id){
+                u.admin = true;
+                users.splice(i, 1);
+                break;
+            }
+        }
+    }
+    resp.redirect('/groups');
 });
 /*
 

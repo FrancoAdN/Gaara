@@ -21,6 +21,7 @@ Fin: <p>{{this.end}}</p>
           <th scope="col"> Estado</th>
           <th scope="col"> Horas </th>
           <th scope="col"> Grupo </th>
+          <th scope="col"> Precedencia </th>
           {{#if admin}}
           <th scope="col">&nbsp;</th>
           {{/if}}
@@ -31,11 +32,17 @@ Fin: <p>{{this.end}}</p>
           {{#if admin}}
           {{#each tasks}}
             <tr>
-            {{!-- <th scope="row"><input type="checkbox" /></th> --}}
-            <td class="tm-product-name">{{this.name}}</td>
+            <td class="tm-product-name">
+              {{#if this.usrInTask}}
+              <u>{{this.name}}</u>
+              {{else}}
+              {{this.name}}
+              {{/if}}
+              </td>
             <td> {{#state this.state}}{{/state}} </td>
             <td> {{this.hours}} hs</td>
             <td> {{nameGroup this.group}}</td>
+            <td>{{precedence this.prec}}</td>
             <td>
                 <a href="del/{{this.id}}" class="tm-product-delete-link">
                 <i class="far fa-trash-alt tm-product-delete-icon"></i>
@@ -57,7 +64,65 @@ Fin: <p>{{this.end}}</p>
     </table>
   </div>
   {{#if admin}}
-  <a href="add-task" method="get" class="btn btn-primary btn-block text-uppercase mb-3"> Agregar nueva tarea</a>
+  {{!-- <a href="add-task" method="get" class="btn btn-primary btn-block text-uppercase mb-3"> Agregar nueva tarea</a> --}}
+  <div class="container tm-mt-big tm-mb-big">
+      <div class="row">
+        <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto">
+          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+            <div class="row">
+              <div class="col-12">
+                <h2 class="tm-block-title d-inline-block"> Agregar tarea</h2>
+              </div>
+            </div>
+            <div class="row tm-edit-product-row">
+              <div class="col-xl-6 col-lg-6 col-md-12">
+                <form action="/add-task" method="post" class="tm-edit-product-form" name="fproj" onsubmit="return checkSubmit()">
+                  {{#each project}}
+                  <input type="number" hidden name="proj" value={{this.id}}>
+                  {{/each}}
+                  <div class="form-group mb-3">
+                    <label for="name"> Task Name</label><input id="name" name="name" type="text" class="form-control validate" required/>
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="desc"> Descripcion</label>
+                    <textarea class="form-control validate" rows="3" name="desc"required></textarea>
+                  </div>
+                  <div class="form-group mb-3">
+                    <label for="group" >Grupo</label>
+                    <select class="custom-select tm-select-accounts" id="category" name="group" required>
+                      {{#each group}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                  <div class="row">
+                      <div class="form-group mb-3 col-xs-12 col-sm-6">
+                          <label for="hours">Horas</label>
+                          <input name="hours" type="number" class="form-control validate" data-large-mode="true" required/>
+                        </div>
+                  </div>
+                  
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
+                <div class="tm-product-img-dummy mx-auto" style="background: none;">
+                  <label for="prec" >Precedencia: </label>
+                    <select class="custom-select tm-select-accounts" id="prec" name="prec" required>
+                      <option value="-">-</option>
+                      {{#each tasks}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                      {{/each}}
+                    </select>
+                </div>
+              </div>
+              <div class="col-12">
+                <input type="submit" class="btn btn-primary btn-block text-uppercase" value="Agregar tarea">
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   {{/if}}
 </div>
 </div>
