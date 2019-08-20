@@ -65,10 +65,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link " href="/admin" method="get">
+                {{#if admin}}
+                <a class="nav-link " href="/groups" method="get">
                   <i class="material-icons">assignment</i>
                   <span>Admin page</span>
-                </a>
+                </a> 
+                {{/if}}
+                
               </li>
             </ul>
           </div>
@@ -132,24 +135,30 @@
 
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    {{#if dou}}
+                    <img class="user-avatar rounded-circle mr-2" src="../img/users/1.png" alt="User Avatar">
+                    {{else}}
                     <img class="user-avatar rounded-circle mr-2" src="img/users/1.png" alt="User Avatar">
-                    <span class="d-none d-md-inline-block"> @user-largo-test-aaaa-aaaa </span>
+                    {{/if}}
+                    <span class="d-none d-md-inline-block"> {{name}}</span>
                   </a>
                   <div class="dropdown-menu dropdown-menu-small">
+                    {{#if admin}}
                     <a class="dropdown-item" href="/admin" method="get">
                       <i class="material-icons">&#xE7FD;</i> Admin page </a>
+                    {{/if}}
                     <a class="dropdown-item" href="/home" method="get">
                       <i class="material-icons">vertical_split</i> Proyectos </a>
                     <a class="dropdown-item" href="/add-project"  method="get">
                       <i class="material-icons">note_add</i> Nuevo proyecto </a>
-                    <a class="dropdown-item" href="/add-task"  method="get">
-                      <i class="material-icons">note_add</i> Nueva tarea </a>
+                    {{!-- <a class="dropdown-item" href="/add-task"  method="get">
+                      <i class="material-icons">note_add</i> Nueva tarea </a> --}}
                     <div class="dropdown-divider"></div>
 
                     <!-- el logout esta con <a> y vos usaste form, despues fijate eso  -->
-                    <a class="dropdown-item text-danger" href="#">
-                      <i class="material-icons text-danger">&#xE879;</i><a > Logout </a>
-                      <form action="/logout" method="post" id="myForm"><a class="nav-link d-block" onclick="document.getElementById('myForm').submit()">{{name}}, </a></form>
+                    <a class="dropdown-item text-danger" href="/logout">
+                      Logout <i class="material-icons text-danger">&#xE879;</i> </a>
+                    <a class="nav-link d-block" href="/logout">{{name}}</a>
                
                 </div>                 
                 </li>

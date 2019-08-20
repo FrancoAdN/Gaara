@@ -20,8 +20,8 @@ let db = {
     ],
     proyects: [
         {creator: 1, state:1, name:'proyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-04', id:1},
-        {creator: 1, state:2, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', id:2},
-        {creator: 2, state:3, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', id:3},
+        {creator: 1, state:1, name:'proyect2', desc:'testproyect2', start:'2019-07-05', end: '2019-07-09', id:2},
+        {creator: 2, state:1, name:'Nproyect1', desc:'testproyect1', start:'2019-07-01', end: '2019-07-20', id:3},
         {creator: 2, state:1, name:'Nproyect2', desc:'testproyect2', start:'2019-07-14', end: '2019-08-03', id:4}
     ],
     tasks:[
@@ -33,8 +33,8 @@ let db = {
         {p_id: 3, name:'Tarea6', desc:'6', hours:23, state:1, group: 2, prec: NaN, done: false, id: 6},
         {p_id: 4, name:'Tarea7', desc:'7', hours:6, state:1, group: 4, prec: NaN, done: false, id: 7},
         {p_id: 4, name:'Tarea8', desc:'8', hours:8, state:1, group: 8, prec: NaN, done: false, id: 8},
-        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, prec: NaN, done: false, id: 8},
-        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, prec: NaN, done: false,id: 8}
+        {p_id: 2, name:'Tarea9', desc:'8', hours:8, state:1, group: 6, prec: NaN, done: false, id: 9},
+        {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, prec: NaN, done: false,id: 10}
     ],
     groups:[
         {id: 1, name: 'Electrónica', users:[1, 2, 4, 3, 7, 10]},
@@ -68,7 +68,7 @@ const hbs = expbs.create({
             else if(a == 2)
                 return '<div class="tm-status-circle pending"></div>In progress';
             else if(a == 3)
-                return '<div class="tm-status-circle cancelled"></div>Test';
+                return '<div class="tm-status-circle cancelled"></div>Done!';
         },
         nameGroup: (id) => {
             for(let g of db.groups){
@@ -102,6 +102,14 @@ const hbs = expbs.create({
             }
 
             return true;
+        },
+        progress: (id) => {
+            const done = parseFloat(isProjectDone(id) * 100).toFixed(1);
+            
+            return `<div style="width: 100%; height: 30px; background: white; border:2px solid black;" value="asfaf">
+                <div style="width: ${done}%; height:26px; background: #78a7cc;"></div>
+            </div>
+            <h6 style="color: black;">Complete : ${done}%</h6>`;
         }
     }
 });
@@ -250,6 +258,18 @@ MongoClient.connect(url, function(err, db) {
 //     }else if(input == 'taskuser')
 //         console.log(db.taskuser);
 // });
+function isProjectDone(id){
+    let tDone = {done: 0, total: 0};
+    for(let t of db.tasks){
+        if(t.p_id == id){
+            tDone.total++;
+            if(t.done)
+                tDone.done++;
+        }
+    }
+    return (tDone.done / tDone.total);
+}
+
 function getGroups(id){
     let groups = [];
     for(let gr of db.groups){
@@ -334,7 +354,7 @@ app.post('/login', (req, resp) => {
         if(u.email === verify.username && u.pwd === verify.password){
             console.log(`User logged on ${u.usr}`);
             id = u.id;
-            name = u.usr;
+            name = u.usr +' '+ u.last;
             admin = u.admin;
             break;
         }
@@ -352,7 +372,7 @@ app.post('/login', (req, resp) => {
 
 
 
-app.post('/logout', (req, resp) => {
+app.get('/logout', (req, resp) => {
     resp.clearCookie('session');
     resp.redirect('/'); 
 });
@@ -483,14 +503,23 @@ app.post('/endtask', (req, resp) => {
     for(let t of db.tasks){
         if(t.id == id){
             t.done = true;
+            t.state = 3;
             redirect = t.p_id;
+            break;
+        }
+    }
+
+    
+
+    for(let p of db.proyects){
+        if(p.id == redirect){
+            p.state = ((isProjectDone(redirect) == 1) ? 3 : 2);
             break;
         }
     }
 
     resp.json({red: '/project/' + redirect});
 });
-
 
 
 

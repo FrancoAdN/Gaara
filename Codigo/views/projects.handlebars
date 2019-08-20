@@ -33,7 +33,12 @@
             </tbody>
             
         </table>
-    </br>      
+    </br> 
+    {{#each project}}
+    {{#progress this.id}}   
+    {{/progress}}
+    
+    {{/each}}
     </div>
 </div>
 
@@ -96,7 +101,7 @@ Fin: <p>{{this.end}}</p>
           {{/each}}
           {{else}}
             {{#each tasks}}
-            <tr>
+            <tr onclick="window.location.href = '/task/{{this.id}}';">
             <td class="tm-product-name">{{this.name}}</td>
             <td> {{#state this.state}}{{/state}} </td>
             <td> {{this.hours}} hs</td>
