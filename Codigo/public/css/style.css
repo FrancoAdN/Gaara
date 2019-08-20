@@ -4,7 +4,7 @@ html {
 }
 body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
-  background-color: #4e657a;
+  background-color: #fff;
   overflow-x: hidden;
 }
 a {
@@ -33,7 +33,7 @@ button:focus {
 }
 .navbar {
   height: 100px;
-  background-color: #567086;
+  background-color: #fff;
   padding: 0;
 }
 .navbar .container {
@@ -351,7 +351,7 @@ thead {
 .table td,
 .table th {
   border-top: 1px solid #415a70;
-  padding: 15px 25px;
+  padding: 25px 25px;
   vertical-align: middle;
 }
 .tm-table-small td,
@@ -433,7 +433,7 @@ input[type="checkbox"]:focus {
   overflow-y: scroll;
 }
 .tm-product-table tr {
-  font-weight: 600;
+  font-weight: 500;
 }
 .tm-product-name {
   font-size: 0.95rem;
@@ -528,7 +528,7 @@ input[type="checkbox"]:focus {
   max-width: 470px;
 }
 .navbar-toggler {
-  border-color: #708da8;
+  border-color: #fff;
   box-shadow: rgba(255, 255, 255, 0.1) 0 1px 1px 2px;
   border-radius: 0;
   padding: 10px 15px;
@@ -610,7 +610,7 @@ input[type="checkbox"]:focus {
   }
   .nav-link {
     color: #fff;
-    background-color: #567086;
+    background-color: #fff;
     padding: 15px;
     flex-direction: row;
   }

@@ -1,3 +1,43 @@
+          <!-- Header -->
+          <div class="main-content-container container-fluid px-4">
+            <div class="page-header row no-gutters py-4">
+              <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                <span class="text-uppercase page-subtitle"> Menu de proyectos </span>
+                <h3 class="page-title"> Proyectos y tareas </h3>
+              </div>
+            </div>
+
+<div class="col-12 tm-block-col">
+    <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+        <h2 class="tm-block-title"> Proyecto </h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col"> Nombre </th>
+                    <th scope="col"> Descripcion </th>
+                    <th scope="col"> Inicio </th>
+                    <th scope="col"> Fin </th>
+                </tr>
+            </thead>
+            <tbody>
+              {{#each project}}
+                <tr>
+                    <th scope="row"><b> {{this.name}} </b></th>
+                    <td><b> {{this.desc}} </b></td> 
+                    {{!-- <td><b></b> {{nameGroup this.group}} </b></td> --}}
+                    <td> {{this.start}} </td>
+                    <td> {{this.end}} </td>
+                </tr>
+                {{/each}}
+                
+            </tbody>
+            
+        </table>
+    </br>      
+    </div>
+</div>
+
+<!-- 
 {{#each project}}
 <h1>{{this.name}}</h1><br>
 {{#if this.car}}
@@ -8,6 +48,8 @@
 Inicio: <p>{{this.start}}</p><br>
 Fin: <p>{{this.end}}</p>
 {{/each}}
+-->
+
 <div class="container mt-5">
 <div class="row tm-content-row">
 <div class="col-12 tm-block-col">
@@ -67,6 +109,29 @@ Fin: <p>{{this.end}}</p>
       </tbody>
     </table>
   </div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
   {{#if admin}}
   {{!-- <a href="add-task" method="get" class="btn btn-primary btn-block text-uppercase mb-3"> Agregar nueva tarea</a> --}}
   <div class="container tm-mt-big tm-mb-big">
@@ -131,3 +196,8 @@ Fin: <p>{{this.end}}</p>
 </div>
 </div>
 </div>
+
+
+
+
+

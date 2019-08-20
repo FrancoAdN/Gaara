@@ -6,40 +6,32 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <title> Gaara </title>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+       <link href="https://fonts.googleapis.com/css?family=Ruda:400,900,700" rel="stylesheet">
       <link rel="stylesheet" href="css/fontawesome.min.css">
-      <link rel="stylesheet" href="css/bootstrap.min.css">
-      <link rel="stylesheet" href="css/style.css">
+      <link href="css/login/bootstrap.min.css" rel="stylesheet">
+      <link href="css/login/login.css" rel="stylesheet">
   </head>
   
-  <body id="reportsPage">
-      <div class="" id="home">
-          <nav class="navbar navbar-expand-xl">
-              <div class="container h-100">
-                  <a class="navbar-brand" href="home" method="get">
-                      <h1 class="tm-site-title mb-0"> Gaara </h1>
-                  </a>
-                  <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                      <i class="fas fa-bars tm-nav-icon"></i>
-                  </button>
+</head>
+<body>
+ 
+  <div class="container-fluid">      
+        <div class="row no-gutter">
+          <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image">         
+            <div class="overlay">
+                  <div class="info">              
+                <h3> Gaara Project </h3>       
                   </div>
               </div>
-          </nav>
-    </div>
+          </div>
+          <div class="col-md-8 col-lg-6">
+            <div class="login d-flex align-items-center py-5">           
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-9 col-lg-8 mx-auto">
+                  </br>
+                    <h3 class="login-heading mb-4">Iniciar sesion</h3> 
 
-    <div class="container tm-mt-big tm-mb-big">
-      <div class="row">
-        <div class="col-12 mx-auto tm-login-col">
-          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-            <div class="row">
-              <div class="col-12 text-center">
-                <h2 class="tm-block-title mb-4"> Bievenido a Gaara Project</h2>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-12">
-                
               <form action="/login" method="post" class="tm-login-form">
                   <div class="form-group">
                     <label for="username">Username</label>
@@ -75,20 +67,27 @@
                     Forgot your password?
                   </button>
                 </form>
-                
+                    
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <footer class="tm-footer row tm-mt-small">
-      <div class="col-12 font-weight-light">
-        <p class="text-center text-white mb-0 px-4 small">
-          Copyright &copy; <b>2019</b> All rights reserved. Gaara Project
-        </p>
-      </div>
-    </footer>
+
+
+
+    
+    
+      <!-- JavaScript Libraries -->
+      <script src="js/login/jquery.min.js"></script>
+      <script src="js/login/bootstrap.bundle.min.js"></script>
+
+           </body>
+    </html>
+    
+
     <script src="js/jquery-3.3.1.min.js"></script>
     <!-- https://jquery.com/download/ -->
     <script src="js/bootstrap.min.js"></script>

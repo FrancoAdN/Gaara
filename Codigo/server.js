@@ -37,7 +37,7 @@ let db = {
         {p_id: 3, name:'Tarea10', desc:'8', hours:8, state:1, group: 9, prec: NaN, done: false,id: 8}
     ],
     groups:[
-        {id: 1, name: 'Electrónica', users:[1, 3, 7, 10]},
+        {id: 1, name: 'Electrónica', users:[1, 2, 4, 3, 7, 10]},
         {id: 2, name: 'Programación Web', users:[8, 4, 6, 2]},
         {id: 3, name: 'Programación Desktop', users:[1, 9, 7]}, 
         {id: 4, name: 'Mantenimiento Informático', users: [5]},

@@ -5,7 +5,7 @@
     img:hover{
         cursor: pointer;
     }
-    #add, #del, #admin{
+    #add, #del{
         border: 1px solid black;
         z-index: 1;
         width: 400px;
@@ -16,7 +16,20 @@
         margin-left: -200px;
         display: none;
     }
+
+    #admin{
+        border: 1px solid black;
+        z-index: 1;
+        width: 400px;
+        height: 1000px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        margin-left: -200px;
+        display: none;
+    }
 </style>
+
 <div id="admin">
     <center><h3 id="adname"></h3></center>
     <form id="adusers" action="/admin" method="post">
@@ -33,16 +46,62 @@
     <form id="dusers" action="/del" method="post">
     </form>
 </div>
-<img src="/img/icons8-admin-settings-male-48.png" alt="ADMIN" onclick="admin()">
-{{#each groups}}
-<h3><a>{{this.name}}</h3>
-    {{#each this.users}}
-        <p>{{username this}}</p>
-    {{/each}}
-    <img src="/img/icons8-denied-30.png" alt="DEL" onclick="delUser({{this.id}}, '{{this.name}}')">
-    <img src="/img/icons8-add-user-group-man-man-30.png" alt="ADD" onclick="addUser({{this.id}}, '{{this.name}}')">
+
+
+      <div class="container mt-5">
+        <div class="row tm-content-row">
+          <div class="col-12 tm-block-col">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+             
+                <img src="/img/icons8-admin-settings-male-48.png" alt="ADMIN" onclick="admin()">
+
+              <h2 class="tm-block-title"> Lista de usuarios </h2>
+              <p class="text-white"> Usuarios </p>           
+              <select class="custom-select">
+                <option value="0">Select account</option>
+                <option value="1"></option>
+              </select>            
+            </div>
+          </div>
+        </div>
+                   
+ <div class="col-12 tm-block-col">
+   <div class="tm-bg-primary-dark tm-block tm-block-taller tm-block-scroll">
+       <h2 class="tm-block-title"> Grupos/Categorias </h2>
+          <table class="table">
+             <thead>
+                <tr>              
+                <th scope="col"> Grupo/Categoria </th>
+                <th scope="col"> Usuarios </th>             
+                </tr>
+                </thead>               
+                    <tbody> 
+                        {{#each groups}}
+                        <tr> 
+                        <th scope="row"><b> {{this.name}} </b></th>
+                     <!--  El each this.users lo toma como una casilla de la tabla xD -->
+                        {{#each this.users}}     
+                        <th scope="row">                   
+                            <b> {{username this}} </b>                         
+                            </th>   
+                            {{/each}}                               
+                         <th>
+                             <img src="/img/icons8-denied-30.png" alt="DEL" onclick="delUser({{this.id}}, '{{this.name}}')">
+                             <img src="/img/icons8-add-user-group-man-man-30.png" alt="ADD" onclick="addUser({{this.id}}, '{{this.name}}')">            
+                        </th>
+                        </tr>
+                    </tbody>
+                    {{/each}}
+                </table>
+                
+            </div>
+          
+        </div>
+
+   
     </br><br>
-{{/each}}
+
+
 
 <script>
     async function addUser(id, name){
